@@ -1,0 +1,5 @@
+github.com/YoriDigitalent/digitalentMicroservice v0.0.0-20201018164000-118f545c8f2f h1:4PP/LvApaVZ9RjAKttDEmfId9sz2wusta2mlmR75CMM=
+github.com/YoriDigitalent/digitalentMicroservice/utils v0.0.0-20201018164000-118f545c8f2f h1:V7eIa1q/ei/Dfx5VaVfxKSPdzjTIDzzGJzSeco2+Kx0=
+github.com/YoriDigitalent/digitalentMicroservice/utils v0.0.0-20201018164000-118f545c8f2f/go.mod h1:PId4G/tfYgpSAlrS+5+U7Zn5GX+NTDZcjrdlYCoX7UY=
+github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
+github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=

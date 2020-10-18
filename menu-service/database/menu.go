@@ -8,9 +8,8 @@ import (
 
 type Menu struct {
 	ID       int    `json:"id" gorm:"primary_key"`
-	Username string `json:"username"`
-	Name     string `json:"name"`
-	Price    int    `json:"price"`
+	Name  string `json:"name"`
+	Price int    `json:"price"`
 }
 
 func (menu *Menu) Insert(db *gorm.DB) error {

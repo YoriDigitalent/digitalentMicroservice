@@ -10,12 +10,12 @@ import (
 	"gorm.io/gorm"
 )
 
-type Menu struct {
+type Menus struct {
 	Db *gorm.DB
 }
 
 // AddMenu handle add menu
-func (menu *Menu) AddMenu(w http.ResponseWriter, r *http.Request) {
+func (menu *Menus) AddMenu(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" {
 		utils.WrapAPIError(w, r, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
@@ -45,7 +45,7 @@ func (menu *Menu) AddMenu(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetMenu handle get menu
-func (handler *Menu) GetMenu(w http.ResponseWriter, r *http.Request) {
+func (handler *Menus) GetMenu(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		utils.WrapAPIError(w, r, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 	}

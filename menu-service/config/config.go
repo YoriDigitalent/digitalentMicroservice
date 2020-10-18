@@ -1,8 +1,9 @@
 package config
 
 type Config struct {
-	Port     string
-	Database Database
+	Port        string
+	AuthService AuthService `mapstructure:"auth_service"`
+	Database    Database
 }
 
 type Database struct {

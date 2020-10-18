@@ -26,9 +26,14 @@ func main() {
 
 	router := mux.NewRouter()
 
-	menuHandler := handler.Menu{Db: db}
+	authMiddleware := handler.AuthMiddleware{
+		AuthService: cfg.AuthService,
+	}
 
-	router.Handle("/add-menu", http.HandlerFunc(menuHandler.AddMenu))
+	menuHandler := handler.Menus{Db: db}
+
+	//router.Handle("/add-menu", http.HandlerFunc(menuHandler.AddMenu))
+	router.Handle("/add-menu", authMiddleware.ValidateAuth(http.HandlerFunc(menuHandler.AddMenu)))
 
 	router.Handle("/get-menu", http.HandlerFunc(menuHandler.GetMenu))
 
