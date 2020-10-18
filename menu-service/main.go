@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/YoriDigitalent/digitalentMicroservice/menu-service/config"
+	"github.com/YoriDigitalent/digitalentMicroservice/menu-service/database"
 	"github.com/YoriDigitalent/digitalentMicroservice/menu-service/handler"
 	"github.com/gorilla/mux"
 	"github.com/spf13/viper"
@@ -58,5 +59,11 @@ func initDB(dbConfig config.Database) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	err = db.AutoMigrate(&database.Menu{})
+	if err != nil {
+		return nil, err
+	}
+
 	return db, nil
 }
