@@ -43,3 +43,20 @@ func (menu *Menu) AddMenu(w http.ResponseWriter, r *http.Request) {
 
 	utils.WrapAPISuccess(w, r, "success", 200)
 }
+
+// GetMenu handle get menu
+func (handler *Menu) GetMenu(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		utils.WrapAPIError(w, r, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+	}
+
+	menu := database.Menu{}
+
+	menus, err := menu.GetAll(handler.Db)
+	if err != nil {
+		utils.WrapAPIError(w, r, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	utils.WrapAPIData(w, r, menus, http.StatusOK, "success")
+}
