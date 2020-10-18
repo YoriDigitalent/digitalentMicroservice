@@ -10,42 +10,47 @@ import (
 	"gorm.io/gorm"
 )
 
-type Menus struct {
+type Menu struct {
 	Db *gorm.DB
 }
 
 // AddMenu handle add menu
-func (menu *Menus) AddMenu(w http.ResponseWriter, r *http.Request) {
+func (menu *Menu) AddMenu(w http.ResponseWriter, r *http.Request) {
 
-	if r.Method != "POST" {
+	if r.Method != http.MethodPost {
+
 		utils.WrapAPIError(w, r, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 		return
 	}
 
 	body, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
+
 	if err != nil {
-		utils.WrapAPIError(w, r, "can't read body", http.StatusBadRequest)
+		utils.WrapAPIError(w, r, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	var dataMenu database.Menu
-	err = json.Unmarshal(body, &dataMenu)
+	var datamenu database.Menu
+	err = json.Unmarshal(body, &menu)
+
 	if err != nil {
-		utils.WrapAPIError(w, r, "error unmarshal : "+err.Error(), http.StatusInternalServerError)
+		utils.WrapAPIError(w, r, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	err = dataMenu.Insert(menu.Db)
+	err = datamenu.Insert(menu.Db)
+
 	if err != nil {
-		utils.WrapAPIError(w, r, "insert menu error : "+err.Error(), http.StatusInternalServerError)
+		utils.WrapAPIError(w, r, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	utils.WrapAPISuccess(w, r, "success", 200)
+	utils.WrapAPISuccess(w, r, "success", http.StatusOK)
+	return
 }
 
 // GetMenu handle get menu
-func (handler *Menus) GetMenu(w http.ResponseWriter, r *http.Request) {
+func (handler *Menu) GetMenu(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		utils.WrapAPIError(w, r, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 	}

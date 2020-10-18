@@ -1,5 +1,5 @@
 package config
 
-type AuthService struct {
+type Auth struct {
 	Host string `mapstructure:"host"`
 }

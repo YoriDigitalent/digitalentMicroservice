@@ -26,11 +26,11 @@ func main() {
 
 	router := mux.NewRouter()
 
-	authMiddleware := handler.AuthMiddleware{
-		AuthService: cfg.AuthService,
-	}
-
 	menuHandler := handler.Menus{Db: db}
+
+	authMiddleware := handler.AuthMiddleware{
+		AuthService: cfg.authService,
+	}
 
 	//router.Handle("/add-menu", http.HandlerFunc(menuHandler.AddMenu))
 	router.Handle("/add-menu", authMiddleware.ValidateAuth(http.HandlerFunc(menuHandler.AddMenu)))

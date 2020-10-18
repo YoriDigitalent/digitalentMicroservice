@@ -5,44 +5,56 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/YoriDigitalent/digitalentMicroservice/menu-service/entity"
+	"github.com/gorilla/context"
 	"github.com/wskurniawan/intro-microservice/service-product/config"
 	"github.com/wskurniawan/intro-microservice/utils"
 )
 
-type AuthMiddleware struct {
+type AuthHandler struct {
 	AuthService config.AuthService
 }
 
-func (auth *AuthMiddleware) ValidateAuth(nextHandler http.HandlerFunc) http.HandlerFunc {
+func (handler *AuthHandler) ValidateAuth(nextHandler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		request, err := http.NewRequest("POST", auth.AuthService.Host+"/admin-auth", nil)
-		if err != nil {
-			utils.WrapAPIError(w, r, "failed to create request : "+err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		request.Header = r.Header
-		authResponse, err := http.DefaultClient.Do(request)
-		if err != nil {
-			utils.WrapAPIError(w, r, "validate auth failed : "+err.Error(), http.StatusInternalServerError)
-			return
-		}
-		defer authResponse.Body.Close()
-
-		body, err := ioutil.ReadAll(authResponse.Body)
+		request, err := http.NewRequest(http.MethodPost, handler.AuthService.Host+"/validate-admin", nil)
 		if err != nil {
 			utils.WrapAPIError(w, r, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		var authResult map[string]interface{}
-		err = json.Unmarshal(body, &authResult)
+		request.Header = r.Header
 
-		if authResponse.StatusCode != 200 {
-			utils.WrapAPIError(w, r, authResult["error_details"].(string), authResponse.StatusCode)
+		authResponse, err := http.DefaultClient.Do(request)
+		if err != nil {
+			utils.WrapAPIError(w, r, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
+		responseBody, err := ioutil.ReadAll(authResponse.Body)
+
+		if err != nil {
+			utils.WrapAPIError(w, r, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		var authResult entity.AuthResponse
+		err = json.Unmarshal(responseBody, &authResult)
+		if err != nil {
+			utils.WrapAPIError(w, r, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		if authResponse.StatusCode != http.StatusOK {
+			utils.WrapAPIError(w, r, authResult.ErrorDetails, authResponse.StatusCode)
+			return
+
+		}
+
+		context.Set(r, "user", authResult.Data.Username)
+
 		nextHandler(w, r)
+
 	}
+
 }
